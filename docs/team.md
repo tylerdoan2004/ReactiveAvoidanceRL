@@ -6,11 +6,11 @@ title:  Team
 # {{ page.title }}
 
 
-## USER 1
-***UCI Net ID***: ucinetid1
+## Tyler Doan
+***UCI Net ID***: tylerqud
 
-## USER 2
-***UCI Net ID***: ucinetid2
+## Zicong Yu
+***UCI Net ID***: zicongy1
 
-## USER 3
-***UCI Net ID***: ucinetid3
+## Aston Chan
+***UCI Net ID***: kic2
