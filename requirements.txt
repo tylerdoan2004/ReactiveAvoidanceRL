@@ -2,3 +2,5 @@ gymnasium
 matplotlib
 numpy
 minigrid
+stable_baselines3
+pygame

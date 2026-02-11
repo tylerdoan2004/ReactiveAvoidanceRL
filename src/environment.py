@@ -7,15 +7,17 @@ from gymnasium import spaces
 import numpy as np
 from typing import Optional
 
-class Environment(MiniGridEnv):
+class RLEnvironment(MiniGridEnv):
 
-    def __init__(self, grid_size=10, max_steps=100, n_seekers=1):
+    def __init__(self, grid_size=10, max_steps=100, n_seekers=1, render_mode=None):
         self.n_seekers = n_seekers
         self.seeker_positions = []
 
+        self.render_mode = render_mode
+
         mission_space = MissionSpace(mission_func=lambda: "reach the goal")
 
-        super().__init__(mission_space=mission_space, grid_size=grid_size, max_steps=max_steps)
+        super().__init__(mission_space=mission_space, grid_size=grid_size, max_steps=max_steps, render_mode=render_mode)
 
         self.action_space = spaces.Discrete(8)
 
@@ -33,7 +35,7 @@ class Environment(MiniGridEnv):
         self.observation_space = spaces.Dict({
             'agent': spaces.Box(0, grid_size-1, shape=(2,), dtype=np.int32),
             'goal': spaces.Box(0, grid_size-1, shape=(2,), dtype=np.int32),
-            'seekers': spaces.Box(0, grid_size-1, shape=(n_seekers, 2), dtype=np.int32),
+            # 'seekers': spaces.Box(0, grid_size-1, shape=(n_seekers, 2), dtype=np.int32),
         })
 
     def _gen_grid(self, width, height):
@@ -57,7 +59,7 @@ class Environment(MiniGridEnv):
         return {
             'agent': np.array(self.agent_pos, dtype=np.int32),
             'goal': np.array(self.goal_pos, dtype=np.int32),
-            'seekers': np.array(self.seeker_positions, dtype=np.int32),
+            # 'seekers': np.array(self.seeker_positions, dtype=np.int32),
         }
     
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
@@ -65,6 +67,10 @@ class Environment(MiniGridEnv):
         return obs, info
 
     def step(self, action):
+
+        if isinstance(action, np.ndarray):
+            action = int(action.item())
+
         # Get movement direction
         direction = self.action_map[action]
 

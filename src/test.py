@@ -1,0 +1,45 @@
+from environment import RLEnvironment
+from stable_baselines3 import PPO
+import time
+
+# Loads in the trained model and creates a test environment
+print("Loading trained model...")
+test_env = RLEnvironment(render_mode="human")
+model = PPO.load("ppo_reactive_avoidance", env=test_env)
+
+# Defining the number of times to test in this environment
+print("Starting testing with visualization...")
+num_episodes = 5
+
+for episode in range(num_episodes):
+    print(f"\n=== Episode {episode + 1}/{num_episodes} ===")
+
+    # Initialize variables, reward and initial conditions
+    total_reward = 0
+    obs, info = test_env.reset()
+    
+    # The maximum number of steps per episode, can change based on grid size
+    for step in range(100):
+
+        # Get action from trained model
+        action, _ = model.predict(obs, deterministic=True)
+        
+        # Take step and get environment states
+        obs, reward, terminated, truncated, info = test_env.step(action)
+        total_reward += reward
+        
+        # Render and slow down for visualization
+        test_env.render()
+        time.sleep(0.2)
+        
+        # Print step info
+        print(f"Step {step}: action={action}, reward={reward:.1f}, total={total_reward:.1f}")
+        
+        if terminated or truncated:
+            print(f"Episode {episode + 1} ended at step {step}!")
+            print(f"Total reward: {total_reward:.1f}")
+            time.sleep(2)
+            break
+
+print("\n=== Testing Complete ===")
+test_env.close()
