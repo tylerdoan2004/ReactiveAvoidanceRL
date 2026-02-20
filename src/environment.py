@@ -86,6 +86,8 @@ class RLEnvironment(MiniGridEnv):
             np.clip(new_pos[1], 0, self.height - 1)
         )
 
+        prev_dist = np.linalg.norm(np.array(self.agent_pos) - np.array(self.goal_pos))
+
         # Check if cell is passable
         cell = self.grid.get(*new_pos)
         if cell is None or cell.can_overlap():
@@ -99,7 +101,11 @@ class RLEnvironment(MiniGridEnv):
             reward = 100.0
             terminated = True
         else:
-            reward = -1.0
+            curr_dist = np.linalg.norm(np.array(self.agent_pos) - np.array(self.goal_pos))
+
+            dist_reward = (prev_dist - curr_dist) * 0.5
+
+            reward = -0.1 + dist_reward
             terminated = False
 
         # Check if max steps reached
