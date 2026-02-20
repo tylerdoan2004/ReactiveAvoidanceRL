@@ -4,3 +4,4 @@ numpy
 minigrid
 stable_baselines3
 pygame
+pyyaml
